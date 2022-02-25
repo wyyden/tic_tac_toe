@@ -1,8 +1,6 @@
-from random import randint
-
 list_of_cells = list(range(1, 10))
 win_position = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
-game_symbol = ['X', 'O']
+
 
 def get_user_symbol():
     while True:
@@ -27,7 +25,7 @@ def choose_position(user_symbol):
             continue
         else:
             value_of_position = int(value_of_position)
-        if str(list_of_cells[value_of_position - 1]) in game_symbol:
+        if str(list_of_cells[value_of_position - 1]) in "XO":
             print('This cell is empty')
             continue
         else:
@@ -47,6 +45,7 @@ def get_second_user_symbol(first_user_symbol):
         return 'O'
     else:
         return 'X'
+
 
 if __name__ == '__main__':
     coun_step = 0
