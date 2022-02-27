@@ -1,5 +1,11 @@
-list_of_cells = list(range(1, 10))
-win_position = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+import sys
+
+list_of_cells = list(range(9))
+win_position = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
+user_turn = True
+ai_turn = False
+user_symbol = 'X'
+ai_symbol = 'O'
 
 
 def get_user_symbol():
@@ -17,57 +23,137 @@ def draw_field():
         print(f'| {list_of_cells[0 + 3 * i]} | {list_of_cells[1 + 3 * i]} | {list_of_cells[2 + 3 * i]} |')
 
 
-def choose_position(user_symbol):
+def choose_position(list_of_cells):
+    field = list_of_cells.copy()
     while True:
         value_of_position = input(f'Select the position of {user_symbol}:  ')
-        if int(value_of_position) not in range(1, 10):
-            print('Position must be in range from 1 to 9')
+        if int(value_of_position) not in range(9):
+            print('Position must be in range from 0 to 8')
             continue
         else:
             value_of_position = int(value_of_position)
-        if str(list_of_cells[value_of_position - 1]) in "XO":
-            print('This cell is empty')
+
+        if str(field[value_of_position]) in "XO":
+            print('This cell is\'n empty')
             continue
         else:
-            list_of_cells[value_of_position - 1] = user_symbol
-            break
+            field[value_of_position] = user_symbol
+            return field
 
 
-def check_win():
+def check_win(feild, is_user_step):
     for each in win_position:
-        if (list_of_cells[each[0] - 1]) == (list_of_cells[each[1] - 1]) == (list_of_cells[each[2] - 1]):
-            return True
+        if (feild[each[0]]) == (feild[each[1]]) == (feild[each[2]]):
+            if is_user_step:
+                return 'USER WIN'
+            else:
+                return 'AI WIN'
     return False
 
 
-def get_second_user_symbol(first_user_symbol):
-    if first_user_symbol == 'X':
+def get_ai_symbol(user_symbol):
+    if user_symbol == 'X':
         return 'O'
     else:
         return 'X'
 
 
+def minimax(field, depth, is_user_step):
+    if check_win(field, is_user_step) == 'AI WIN':
+        return scores[ai_symbol]
+    elif check_win(field, is_user_step) == 'USER WIN':
+        return scores[user_symbol]
+    elif is_draw(field):
+        return scores['is draw']
+
+    if is_user_step:
+        best_score = sys.maxsize
+        for cell in field:
+            if str(cell) not in 'XO':
+                cell_num = field[cell]
+                field[cell] = user_symbol
+                score = minimax(field, depth + 1, ai_turn)
+                field[cell] = cell_num
+                best_score = min(best_score, score)
+    else:
+        best_score = - sys.maxsize
+        for cell in field:
+            if str(cell) not in 'XO':
+                cell_num = field[cell]
+                field[cell] = ai_symbol
+                score = minimax(field, depth + 1, user_turn)
+                field[cell] = cell_num
+                best_score = max(best_score, score)
+
+    return best_score
+
+
+def get_ai_position(list_of_cells):
+    move = None
+    best_score = -sys.maxsize
+    field = [cell for cell in list_of_cells]
+    for cell in field:
+        if str(cell) not in 'XO':
+            num_cell = cell
+            field[cell] = ai_symbol
+            score = minimax(field, 0, user_turn)
+            field[cell] = num_cell
+            if score > best_score:
+                best_score = score
+                move = cell
+
+    return move
+
+
+def is_draw(field):
+    count = 0
+    for cell in field:
+        if str(cell) in 'XO':
+            count += 1
+    return count == 9
+
+
+scores = {
+    user_symbol: 100,
+    ai_symbol: -100,
+    'is draw': 0
+}
+
+
+def first_step():
+    answer = input('Enter \'X\' if you want the computer to go first else enter \'O\': ').strip(' ').lower()
+    if answer == 'x':
+        return True
+    else:
+        return False
+
 if __name__ == '__main__':
     coun_step = 0
-    first_user_symbol = get_user_symbol()
-    second_user_symbol = get_second_user_symbol(first_user_symbol)
+    #    user_symbol = get_user_symbol()
+    #    ai_symbol = get_ai_symbol(user_symbol)
+
+    is_user_step = first_step()
     while True:
-        draw_field()
-        if coun_step % 2 == 0:
-            choose_position(first_user_symbol)
+        if is_user_step:
+            draw_field()
+            list_of_cells = choose_position(list_of_cells)
         else:
-            choose_position(second_user_symbol)
+            move = get_ai_position(list_of_cells)
+            if move is not None:
+                list_of_cells[move] = ai_symbol
         if coun_step > 3:
-            winner = check_win()
-            if winner:
-                draw_field()
-                if coun_step % 2 == 0:
-                    print(first_user_symbol, 'is win')
-                else:
-                    print(second_user_symbol, 'is win')
+            if check_win(list_of_cells, is_user_step) == 'AI WIN':
+                print(check_win(list_of_cells, is_user_step))
+                break
+            elif check_win(list_of_cells, is_user_step) == 'USER WIN':
+                print(check_win(list_of_cells, is_user_step))
                 break
         coun_step += 1
-        if coun_step > 8:
+        if is_draw(list_of_cells):
             draw_field()
             print('Is draw')
             break
+        if is_user_step:
+            is_user_step = False
+        else:
+            is_user_step = True
