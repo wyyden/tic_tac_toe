@@ -1,4 +1,6 @@
 import sys
+import time
+
 
 list_of_cells = list(range(9))
 win_position = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
@@ -6,16 +8,6 @@ user_turn = True
 ai_turn = False
 user_symbol = 'X'
 ai_symbol = 'O'
-
-
-def get_user_symbol():
-    while True:
-        user_symbol = input('Enter symbol for game: ').strip(' ').upper()
-        if user_symbol not in ('X', 'O'):
-            print('Symbol is\'t X or O')
-            continue
-        else:
-            return user_symbol
 
 
 def draw_field():
@@ -143,9 +135,11 @@ if __name__ == '__main__':
                 list_of_cells[move] = ai_symbol
         if coun_step > 3:
             if check_win(list_of_cells, is_user_step) == 'AI WIN':
+                draw_field()
                 print(check_win(list_of_cells, is_user_step))
                 break
             elif check_win(list_of_cells, is_user_step) == 'USER WIN':
+                draw_field()
                 print(check_win(list_of_cells, is_user_step))
                 break
         coun_step += 1
@@ -157,3 +151,4 @@ if __name__ == '__main__':
             is_user_step = False
         else:
             is_user_step = True
+    time.sleep(10)
