@@ -113,17 +113,18 @@ scores = {
 
 
 def first_step():
-    answer = input('Enter \'X\' if you want the computer to go first else enter \'O\': ').strip(' ').lower()
-    if answer == 'x':
-        return True
-    else:
-        return False
+    while True:
+        answer = input('Enter \'X\' if you want the computer to go first else enter \'O\': ').strip(' ').lower()
+        if answer not in 'XO':
+            print('Symbol is\'t x or y')
+            continue
+        if answer == 'x':
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     coun_step = 0
-    #    user_symbol = get_user_symbol()
-    #    ai_symbol = get_ai_symbol(user_symbol)
-
     is_user_step = first_step()
     while True:
         if is_user_step:
