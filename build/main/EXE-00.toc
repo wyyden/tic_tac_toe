@@ -50,7 +50,7 @@
  [],
  False,
  False,
- 1646989183,
+ 1646989609,
  [('run.exe',
    'c:\\learn_petrgu\\tic_tac_toe\\venv\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\run.exe',
    'EXECUTABLE')])

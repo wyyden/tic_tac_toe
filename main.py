@@ -115,7 +115,7 @@ scores = {
 def first_step():
     while True:
         answer = input('Enter \'X\' if you want the computer to go first else enter \'O\': ').strip(' ').lower()
-        if answer != 'XO':
+        if answer not in 'XO':
             print('Symbol is\'t x or y')
             continue
 
